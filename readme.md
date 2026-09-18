@@ -4,6 +4,8 @@ A Python-based marketplace analysis and optimisation tool for finding and rankin
 
 The Bazaar in Hypixel SkyBlock is an in-game stock market system used for bulk trading items.
 
+While Hypixel Skyblock may be a game economy, it gives me a nice sandbox for experimenting with market analysis!
+
 ## What it does
 
 FlipFlop currently supports several types of Bazaar opportunities, including:
@@ -32,9 +34,7 @@ FlipFlop started as a project to make coins in a video game, though ended up bei
 * make-or-buy optimisation
 * heuristic opportunity scoring
 
-The scoring system is more involved than just picking the highest profit trade. It combines profit, margin and, liquidity, while the crafting system considers the cost and availability of every input needed to produce an item.
-
-Hypixel Skyblock is a game economy, but it gives me a nice sandbox for experimenting with market analysis, optimisation and quantitative decision-making.
+The scoring system combines a number of factors (such as profit margin and liquidity) while the crafting system considers the cost and availability of every input needed to produce an item.
 
 See below for an in-depth analysis of the implementation details!
 
@@ -78,9 +78,7 @@ $$
 P_{\mathrm{score}}=\ln(1+P)
 $$
 
-This prevents extremely large-profit items from completely dominating the ranking.
-
-The exponent of \(0.8\) gives profit substantial importance without making it overwhelmingly more important than the other factors.
+This prevents extremely large-profit items from dominating the ranking.
 
 ### Liquidity
 
