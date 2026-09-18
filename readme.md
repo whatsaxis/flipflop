@@ -1,6 +1,6 @@
 # FlipFlop
 
-A Python-based marketplace analysis and optimisation tool for finding and ranking profitable trading opportunities in the Hypixel SkyBlock Bazaar.
+A Python marketplace analysis tool for finding profitable trading opportunities in the Hypixel SkyBlock Bazaar.
 
 The Bazaar in Hypixel SkyBlock is an in-game stock market system used for bulk trading items.
 
