@@ -2,12 +2,14 @@
 
 A Python-based marketplace analysis and optimisation tool for finding and ranking profitable trading opportunities in the Hypixel SkyBlock Bazaar.
 
+The Bazaar in Hypixel SkyBlock is an in-game stock market system used for bulk trading items.
+
 ## What it does
 
 FlipFlop currently supports several types of Bazaar opportunities, including:
 
 * Direct flips: buy an item through a buy order and resell it through a sell order
-* Crafting flips:  buy the materials needed to craft an item, then sell the crafted result
+* Crafting flips: buy the materials needed to craft an item, then sell the crafted result
 
 Rather than simply looking for the largest raw profit, FlipFlop assigns each opportunity a score based on factors such as:
 
@@ -17,38 +19,28 @@ Rather than simply looking for the largest raw profit, FlipFlop assigns each opp
 * number of materials required
 * expected transaction complexity
 
-This makes the output more useful than a list of items sorted by price difference alone.
-
 ## Why I built it
 
-FlipFlop started as a game project, but it ended up being a fun way to experiment with ideas from trading and optimisation:
+FlipFlop started as a project to make coins in a video game, though ended up being a fun way to experiment with ideas from trading and optimisation such as:
 
 * arbitrage and bid/ask spreads
 * profit and return
 * profit margins
-* liquidity and market depth
-* transaction costs and execution constraints
+* liquidity
+* transaction costs / execution constraints
 * recursive bill-of-materials analysis
 * make-or-buy optimisation
 * heuristic opportunity scoring
 
-The scoring system is deliberately more complicated than just picking the highest profit trade. It combines profit, margin and liquidity, while the crafting system considers the cost and availability of every input needed to produce an item.
+The scoring system is more involved than just picking the highest profit trade. It combines profit, margin and, liquidity, while the crafting system considers the cost and availability of every input needed to produce an item.
 
-It definitely isn't meant to be a realistic financial trading system. The Bazaar is a game economy, but it gives me a nice sandbox for experimenting with market analysis, optimisation and quantitative decision-making.
+Hypixel Skyblock is a game economy, but it gives me a nice sandbox for experimenting with market analysis, optimisation and quantitative decision-making.
 
 See below for an in-depth analysis of the implementation details!
 
 ## Direct Bazaar Flips
 
 A direct flip exploits the difference between the effective acquisition and selling prices of an item.
-
-Conceptually:
-
-```text
-Buy Order → Acquire Item → Sell Order
-                 ↓
-              Profit
-```
 
 The ranking metric combines profit, margin, and two-sided market volume.
 
@@ -110,7 +102,7 @@ $$
 
 ### Margin
 
-Absolute profit alone can be misleading. A flip making 100,000 coins from a 10,000,000-coin investment is quite different from one making 100,000 coins from a 200,000-coin investment.
+Absolute profit alone can be misleading. A flip making 100,000 coins from a 10,000,000 coin investment is quite different from one making 100,000 coins from a 200,000 coin investment.
 
 The margin term is:
 
@@ -218,33 +210,8 @@ This strongly penalises recipes that require a large number of independent marke
 
 Crafting liquidity is slightly more complicated than direct-flip liquidity because every input has to be acquired before the craft can happen.
 
-The system therefore estimates effective material volume using a harmonic-mean-style calculation, so a single difficult-to-source ingredient can bottleneck the entire opportunity.
+The system therefore estimates effective material volume using a harmonic mean, so a single difficult-to-source ingredient can bottleneck the entire flip.
 
-The final product's trading volume is then incorporated as well.
+The final product's trading volume is then incorporated as well (we need to be able to sell it after all).
 
 In other words, a theoretically profitable recipe is not considered equally attractive if one of its inputs is extremely difficult to acquire or the finished product is difficult to sell.
-
----
-
-## Architecture
-
-FlipFlop is structured around different types of `Flip`, with shared infrastructure for market data, transactions, and opportunity evaluation.
-
-```text
-                     Flip
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-     Direct Flip             Craft Flip
-          │                       │
-      Buy → Sell            Recipe traversal
-                                  │
-                          Recursive materials
-                                  │
-                           Bazaar acquisition
-                                  │
-                              Sell result
-```
-
-
-The scoring system is separated from the mechanics of generating a flip, allowing different opportunity types to be evaluated using their own relevant properties.
